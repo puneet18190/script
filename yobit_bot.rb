@@ -6,7 +6,7 @@ require 'open-uri'
 require 'pry'
 File.open("config.txt", "r") do |f|
   f.each_line do |line|
-    API_KEY = line.split(" = ")[1].gsub("\n","") if line.split(" = ")[0] == "API_KEY"
+    API_KEY = line.split(" = ")[1].gsub("\n","") if line.split(" = ")[0].include? "API_KEY"
     API_SECRET = line.split(" = ")[1].gsub("\n","") if line.split(" = ")[0] == "API_SECRET"
   end
 end
@@ -20,7 +20,6 @@ BASE_URL = "https://yobit.net/"
 # BOT_TYPE = ARGV[1].to_i
 URIs = {
         :public => {
-          :ticker => "api/3/ticker/%s",
           :market_day_summary => "api/3/ticker/%s",
           :order_book => "api/3/depth/%s",
           :last_trades => "api/3/trades/%s",
@@ -245,28 +244,28 @@ BOT_TYPE = gets.strip.to_i
 print "=====================================\n"
 if BOT_TYPE ==1
   print "Enter percent_increase: "
-  percent_increase = gets.strip
+  percent_increase = gets.strip.to_f
   print "Enter chunk: "
-  chunk = gets.strip
+  chunk = gets.strip.to_f
   print "Enter prepump_buffer: "
-  prepump_buffer = gets.strip
+  prepump_buffer = gets.strip.to_f
 elsif BOT_TYPE ==2
   print "Enter percent_decrease: "
-  percent_decrease = gets.strip
+  percent_decrease = gets.strip.to_f
 elsif BOT_TYPE==3
   print "Enter percent_increase: "
-  percent_increase = gets.strip
+  percent_increase = gets.strip.to_f
   print "Enter chunk: "
-  chunk = gets.strip
+  chunk = gets.strip.to_f
   print "Enter prepump_buffer: "
-  prepump_buffer = gets.strip
+  prepump_buffer = gets.strip.to_f
   print "Enter profit: "
-  profit = gets.strip
+  profit = gets.strip.to_f
   print "Enter splits: "
-  splits = gets.strip
+  splits = gets.strip.to_f
 elsif BOT_TYPE ==4
   print "Enter percent_decrease: "
-  percent_decrease = gets.strip
+  percent_decrease = gets.strip.to_f
 else
   print "Invalid BOT_TYPE"
   return false
