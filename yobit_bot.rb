@@ -3,9 +3,17 @@ require "colorize"
 require "json"
 require "cgi"
 require 'open-uri'
+require 'pry'
+File.open("config.txt", "r") do |f|
+  f.each_line do |line|
+    API_KEY = line.split(" = ")[1].gsub("\n","") if line.split(" = ")[0] == "API_KEY"
+    API_SECRET = line.split(" = ")[1].gsub("\n","") if line.split(" = ")[0] == "API_SECRET"
+  end
+end
+
 BASE_URL = "https://yobit.net/"
-API_KEY = "API_KEY"
-API_SECRET = "API_SECRET"
+# API_KEY = "API_KEY"
+# API_SECRET = "API_SECRET"
 @units_bought = 0
 # @currency = ARGV[0].downcase
 # @market_name = @currency+"_btc"
@@ -233,20 +241,62 @@ end
 
 print "Enter BOT_TYPE:"
 BOT_TYPE = gets.strip.to_i
-unless [1,2,3,4].include?(BOT_TYPE)
+
+print "=====================================\n"
+if BOT_TYPE ==1
+  print "Enter percent_increase: "
+  percent_increase = gets.strip
+  print "Enter chunk: "
+  chunk = gets.strip
+  print "Enter prepump_buffer: "
+  prepump_buffer = gets.strip
+elsif BOT_TYPE ==2
+  print "Enter percent_decrease: "
+  percent_decrease = gets.strip
+elsif BOT_TYPE==3
+  print "Enter percent_increase: "
+  percent_increase = gets.strip
+  print "Enter chunk: "
+  chunk = gets.strip
+  print "Enter prepump_buffer: "
+  prepump_buffer = gets.strip
+  print "Enter profit: "
+  profit = gets.strip
+  print "Enter splits: "
+  splits = gets.strip
+elsif BOT_TYPE ==4
+  print "Enter percent_decrease: "
+  percent_decrease = gets.strip
+else
   print "Invalid BOT_TYPE"
   return false
 end
-
+  
+print "=====================================\n"
 print "Enter @currency:"
 @currency = gets.strip.downcase
 @market_name = @currency+"_btc"
 print "=====================================\n"
 print "BOT_TYPE: #{BOT_TYPE}\n"
+if BOT_TYPE ==1
+  print "percent_increase: #{percent_increase} \n"
+  print "chunk: #{chunk} \n"
+  print "prepump_buffer: #{prepump_buffer} \n"
+elsif BOT_TYPE ==2
+  print "percent_decrease: #{percent_decrease} \n"
+elsif BOT_TYPE==3
+  print "percent_increase: #{percent_increase} \n"
+  print "chunk: #{chunk} \n"
+  print "prepump_buffer: #{prepump_buffer} \n"
+  print "profit: #{profit} \n"
+  print "splits: #{splits} \n"
+elsif BOT_TYPE ==4
+  print "percent_decrease: #{percent_decrease} \n"
+end
 print "@currency: #{@currency}\n"
 print "@market_name: #{@market_name}\n"
 
-buy_bot(0.05, 0.00011, 0.5) if BOT_TYPE == 1
-sell_order = sell_bot(0.1) if BOT_TYPE == 2
-buy_sell_bot(0.05, 0.0002, 0.5, 0.1, 1) if BOT_TYPE == 3
-sell_at_any_cost(0.01) if BOT_TYPE == 4
+buy_bot(percent_increase, chunk, prepump_buffer) if BOT_TYPE == 1
+sell_order = sell_bot(percent_decrease) if BOT_TYPE == 2
+buy_sell_bot(percent_increase, chunk, prepump_buffer, profit, splits) if BOT_TYPE == 3
+sell_at_any_cost(percent_decrease) if BOT_TYPE == 4
